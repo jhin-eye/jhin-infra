@@ -1,7 +1,10 @@
 name: Deploy PostgreSQL to EKS
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - 'postgres-v*'  # 예: postgresql 배포를 위한 태그는 postres-v0.1.0 등으로
+
 
 jobs:
   deploy:
@@ -35,7 +38,7 @@ jobs:
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
-        
+
     - name: Deploy PostgreSQL with Helm
       run: |
         helm upgrade --install jhineye-postgres bitnami/postgresql \

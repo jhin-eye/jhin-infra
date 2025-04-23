@@ -6,6 +6,7 @@ primary:
   persistence:
     enabled: true
     size: 10Gi
+    storageClass: gp2
 initdbScripts:
   init.sql: |
     -- "member" definition
