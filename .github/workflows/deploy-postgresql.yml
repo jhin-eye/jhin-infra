@@ -1,7 +1,7 @@
 name: Deploy PostgreSQL to EKS
 
 on:
-  workflow_dispatch:  # 수동 실행
+  workflow_dispatch:  # 수동 실행 트리거
 
 jobs:
   deploy:
@@ -20,7 +20,12 @@ jobs:
 
     - name: Install Helm and kubectl
       run: |
-        curl -sSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        # Install Helm (no script error)
+        curl -LO https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz
+        tar -zxvf helm-v3.13.3-linux-amd64.tar.gz
+        sudo mv linux-amd64/helm /usr/local/bin/helm
+
+        # Install kubectl
         curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
         chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
 
