@@ -39,6 +39,10 @@ jobs:
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
 
+    - name: Clean existing release
+      run: |
+        helm uninstall jhineye-postgres -n jhin-eye || true
+
     - name: Deploy PostgreSQL with Helm
       run: |
         helm upgrade --install jhineye-postgres bitnami/postgresql \
