@@ -40,6 +40,6 @@ jobs:
     - name: Deploy PostgreSQL with Helm
       run: |
         helm upgrade --install jhineye-postgres bitnami/postgresql \
-          --namespace jhineye-db --create-namespace \
+          --namespace jhineye  --create-namespace \
           -f postgresql/values.yaml \
           --set auth.password=${{ secrets.POSTGRES_PASSWORD }}
