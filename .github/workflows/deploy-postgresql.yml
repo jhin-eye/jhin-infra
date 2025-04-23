@@ -1,0 +1,40 @@
+name: Deploy PostgreSQL to EKS
+
+on:
+  workflow_dispatch:  # 수동 실행
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Install Helm and kubectl
+      run: |
+        curl -sSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
+
+    - name: Connect to EKS
+      run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
+
+    - name: Add Bitnami Helm Repo
+      run: |
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+
+    - name: Deploy PostgreSQL with Helm
+      run: |
+        helm upgrade --install jhineye-postgres bitnami/postgresql \
+          --namespace jhineye-db --create-namespace \
+          -f postgresql/values.yaml \
+          --set auth.password=${{ secrets.POSTGRES_PASSWORD }}
