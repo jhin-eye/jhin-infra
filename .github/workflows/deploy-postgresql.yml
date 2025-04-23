@@ -1,7 +1,7 @@
 name: Deploy PostgreSQL to EKS
 
 on:
-  workflow_dispatch:  # 수동 실행 트리거
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -18,16 +18,17 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
 
-    - name: Install Helm and kubectl
+    - name: Install Helm
       run: |
-        # Install Helm
-        curl -LO https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz && \
-        tar -zxvf helm-v3.13.3-linux-amd64.tar.gz && \
+        curl -LO https://get.helm.sh/helm-v3.13.3-linux-amd64.tar.gz
+        tar -zxvf helm-v3.13.3-linux-amd64.tar.gz
         sudo mv linux-amd64/helm /usr/local/bin/helm
 
-        # Install kubectl
-        curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-        chmod +x kubectl && sudo mv kubectl /usr/local/bin/kubectl
+    - name: Install kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/kubectl
 
     - name: Connect to EKS
       run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
@@ -40,6 +41,7 @@ jobs:
     - name: Deploy PostgreSQL with Helm
       run: |
         helm upgrade --install jhineye-postgres bitnami/postgresql \
-          --namespace jhineye  --create-namespace \
-          -f postgresql/values.yaml \
+          --namespace jhin-eye \
+          --create-namespace \
+          -f postgresql/values/values.yaml \
           --set auth.password=${{ secrets.POSTGRES_PASSWORD }}
