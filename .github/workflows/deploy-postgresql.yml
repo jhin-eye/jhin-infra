@@ -31,6 +31,11 @@ jobs:
     - name: Update kubeconfig for EKS
       run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
 
+    - name: Add Bitnami Helm Repo
+      run: |
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+        
     - name: Deploy PostgreSQL with Helm
       run: |
         helm upgrade --install jhineye-postgres bitnami/postgresql \
