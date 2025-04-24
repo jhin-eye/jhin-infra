@@ -17,5 +17,5 @@ externalZookeeper:
 persistence:
   # Kafka의 데이터(로그 등)를 영속적으로 저장할지 여부
   enabled: true
-  size: 2Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
+  size: 1Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
   storageClass: gp2  # EBS 볼륨으로 생성
