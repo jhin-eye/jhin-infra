@@ -3,7 +3,7 @@ name: Deploy Kafka to EKS
 on:
   push:
     tags:
-      - 'kafka-v*'  # 예: kafka-v0.1.0
+      - 'kafka-v*'  # 예: kafka-v0.1.0 태그 푸시 시 실행
 
 jobs:
   deploy:
@@ -36,7 +36,7 @@ jobs:
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
 
-    - name: Clean existing release and PVC
+    - name: Clean existing Kafka release and PVC
       run: |
         helm uninstall kafka -n jhin-eye || true
         kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true

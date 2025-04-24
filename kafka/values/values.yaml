@@ -1,24 +1,21 @@
-replicaCount: 1
+# Kafka 전체 컨트롤러 수 (아래 controller.replicaCount가 우선함. 이건 구버전 잔재)
+replicaCount: 1  # Deprecated
 
-image:
-  tag: 3.7.0
+controller:
+  # Kafka 컨트롤러 Pod 개수 (여기 값이 실제로 반영됨)
+  replicaCount: 1
 
+# Zookeeper 내장 기능 비활성화 (이미 외부 Zookeeper를 따로 띄워서)
 zookeeper:
-  enabled: false  # 이미 배포한 zookeeper 사용
+  enabled: false
 
+# 외부 Zookeeper 주소 명시
 externalZookeeper:
   servers:
     - zookeeper.jhin-eye.svc.cluster.local
 
 persistence:
+  # Kafka의 데이터(로그 등)를 영속적으로 저장할지 여부
   enabled: true
-  size: 2Gi
-  storageClass: gp2
-
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 250m
-  limits:
-    memory: 1Gi
-    cpu: 500m
+  size: 2Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
+  storageClass: gp2  # EBS 볼륨으로 생성
