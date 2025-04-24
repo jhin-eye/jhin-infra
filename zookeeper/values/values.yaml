@@ -1,0 +1,43 @@
+replicaCount: 1
+
+auth:
+  enabled: false
+
+persistence:
+  enabled: true
+  storageClass: gp2
+  size: 1Gi
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 1Gi
+    cpu: 500m
+
+service:
+  type: ClusterIP
+  port: 2181
+
+autopurge:
+  snapRetainCount: 3
+  purgeInterval: 24
+
+# Optional: 노드 이름 prefix 설정
+fullnameOverride: zookeeper
+
+# Optional: liveness/readiness probe 튜닝
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 6
+
+readinessProbe:
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 3
