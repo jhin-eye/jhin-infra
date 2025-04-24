@@ -1,0 +1,49 @@
+name: Deploy Redis to EKS
+
+on:
+  push:
+    tags:
+      - 'redis-v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: v3.13.3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+
+    - name: Update kubeconfig for EKS
+      run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
+
+    - name: Add Bitnami Helm Repo
+      run: |
+        helm repo add bitnami https://charts.bitnami.com/bitnami
+        helm repo update
+
+    - name: Clean existing release and PVC
+      run: |
+        helm uninstall redis -n jhin-eye || true
+        kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=redis || true
+
+    - name: Deploy Redis with Helm
+      run: |
+        helm upgrade --install redis bitnami/redis \
+          --namespace jhin-eye \
+          --create-namespace \
+          -f redis/values/values.yaml
