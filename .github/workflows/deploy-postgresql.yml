@@ -38,6 +38,9 @@ jobs:
       run: |
         helm repo add bitnami https://charts.bitnami.com/bitnami
         helm repo update
+    - name: Show existing PVCs before deletion
+      run: kubectl get pvc -n jhin-eye || true
+
 
     - name: Clean existing release and PVC
       run: |
