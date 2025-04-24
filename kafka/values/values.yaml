@@ -4,7 +4,10 @@ replicaCount: 1  # Deprecated
 controller:
   # Kafka 컨트롤러 Pod 개수 (여기 값이 실제로 반영됨)
   replicaCount: 1
-
+  persistence:
+    enabled: true
+    storageClass: gp2
+    size: 2Gi
 # Zookeeper 내장 기능 비활성화 (이미 외부 Zookeeper를 따로 띄워서)
 zookeeper:
   enabled: false
