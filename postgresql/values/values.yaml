@@ -126,6 +126,7 @@ primary:
           method text NULL,
           endpoint text NULL,
           parameters text NULL,
+          header_parameters text NULL,
           CONSTRAINT post_pkey PRIMARY KEY (post_id),
           CONSTRAINT uk_post_board_id_post_no_post_title UNIQUE (board_id, post_no, post_title)
         );
