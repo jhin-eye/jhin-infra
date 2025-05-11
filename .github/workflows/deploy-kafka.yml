@@ -62,4 +62,5 @@ jobs:
             --set brokers.persistence.storageClass=gp2-csi \
             --set listeners.client.protocol=PLAINTEXT \
             --set configurationOverrides.listeners="PLAINTEXT://:9092" \
-            --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092"
+            --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092" \
+            --set configurationOverrides."controller.quorum.voters"="0@kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local:9093"
