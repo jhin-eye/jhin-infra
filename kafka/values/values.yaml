@@ -1,30 +1,31 @@
-# KRaft 모드 활성화 (Zookeeper 제거)
 kraft:
   enabled: true
 
-# 컨트롤러 구성 (KRaft 모드 필수)
 controller:
   replicaCount: 1
   persistence:
     enabled: true
-    storageClass: gp2
     size: 2Gi
+    storageClass: gp2
 
 brokers:
   replicaCount: 1
+  controller:
+    enabled: false      # 👈 브로커는 컨트롤러 역할 안함
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
   persistence:
     enabled: true
     size: 1Gi
     storageClass: gp2
 
-
 auth:
   enabled: false
-
-persistence:
-  enabled: true
-  storageClass: gp2
-  size: 1Gi
+  clientProtocol: plaintext
+  interBrokerProtocol: plaintext
 
 resources:
   requests:
