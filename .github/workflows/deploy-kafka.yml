@@ -40,7 +40,6 @@ jobs:
         run: |
           helm uninstall kafka -n jhin-eye || true
           kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true
-
       - name: Deploy Kafka with Helm
         run: |
           helm upgrade --install kafka bitnami/kafka \
