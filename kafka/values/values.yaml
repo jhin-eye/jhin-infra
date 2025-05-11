@@ -1,16 +1,22 @@
+# KRaft 모드 활성화 (Zookeeper 제거)
 kraft:
-  enabled: false
+  enabled: true
 
+# 컨트롤러 구성 (KRaft 모드 필수)
 controller:
-  enabled: false
-  replicaCount: 0
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: gp2
+    size: 2Gi
 
-zookeeper:
-  enabled: false
+brokers:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: gp2
 
-externalZookeeper:
-  servers:
-    - zookeeper.jhin-eye.svc.cluster.local
 
 auth:
   enabled: false
