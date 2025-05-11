@@ -40,6 +40,7 @@ jobs:
         run: |
           helm uninstall kafka -n jhin-eye || true
           kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true
+
       - name: Deploy Kafka with Helm
         run: |
           helm upgrade --install kafka bitnami/kafka \
@@ -51,10 +52,10 @@ jobs:
             --set kraft.clusterId=jhinClusterId001 \
             --set controller.replicaCount=1 \
             --set controller.broker.enabled=true \
-            --set configurationOverrides."controller\\.quorum\\.voters"="0@kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local:9093" \
+            --set configurationOverrides."controller\.quorum\.voters"="0@kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local:9093" \
             --set brokers.replicaCount=1 \
             --set auth.enabled=false \
-            --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
+            --set nodeSelector."eks\.amazonaws\.com/nodegroup"=jhin-eye-nodes \
             --set controller.persistence.enabled=true \
             --set controller.persistence.size=2Gi \
             --set controller.persistence.storageClass=gp2-csi \
@@ -64,5 +65,5 @@ jobs:
             --set listeners.client.protocol=PLAINTEXT \
             --set configurationOverrides.listeners="PLAINTEXT://:9092" \
             --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092" \
-            --set extraFlags[0]="--auto.create.topics.enable=false" \
-            --set extraFlags[1]="--offsets.topic.replication.factor=1"
+            --set controller.configuration="auto.create.topics.enable=false\noffsets.topic.replication.factor=1\ntransaction.state.log.replication.factor=1" \
+            --set brokers.configuration="auto.create.topics.enable=false\noffsets.topic.replication.factor=1\ntransaction.state.log.replication.factor=1"
