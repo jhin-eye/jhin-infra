@@ -1,5 +1,7 @@
 kraft:
   enabled: true
+nodeSelector:
+  eks.amazonaws.com/nodegroup: jhin-eye-nodes
 
 controller:
   replicaCount: 1

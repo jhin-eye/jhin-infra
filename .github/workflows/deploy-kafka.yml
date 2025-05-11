@@ -41,22 +41,27 @@ jobs:
         helm uninstall kafka -n jhin-eye || true
         kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true
 
-    - name: Deploy Kafka with Helm
-      run: |
-        helm upgrade --install kafka bitnami/kafka \
-          --namespace jhin-eye \
-          --create-namespace \
-          --version 32.2.3 \
-          --set kraft.enabled=true \
-          --set controller.replicaCount=1 \
-          --set brokers.replicaCount=1 \
-          --set brokers.controller.enabled=false \
-          --set auth.enabled=false \
-          --set auth.clientProtocol=plaintext \
-          --set auth.interBrokerProtocol=plaintext \
-          --set listeners.client.protocol=PLAINTEXT \
-          --set listeners.interbroker.protocol=PLAINTEXT \
-          --set resources.requests.memory=1Gi \
-          --set resources.requests.cpu=500m \
-          --set resources.limits.memory=2Gi \
-          --set resources.limits.cpu=1000m
+- name: Deploy Kafka with Helm
+  run: |
+    helm upgrade --install kafka bitnami/kafka \
+      --namespace jhin-eye \
+      --create-namespace \
+      --version 32.2.3 \
+      --set kraft.enabled=true \
+      --set controller.replicaCount=1 \
+      --set controller.persistence.enabled=true \
+      --set controller.persistence.size=2Gi \
+      --set controller.persistence.storageClass=gp2-csi \
+      --set brokers.replicaCount=1 \
+      --set brokers.controller.enabled=false \
+      --set brokers.persistence.enabled=true \
+      --set brokers.persistence.size=1Gi \
+      --set brokers.persistence.storageClass=gp2-csi \
+      --set auth.enabled=false \
+      --set auth.clientProtocol=plaintext \
+      --set auth.interBrokerProtocol=plaintext \
+      --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
+      --set resources.requests.memory=1Gi \
+      --set resources.requests.cpu=500m \
+      --set resources.limits.memory=2Gi \
+      --set resources.limits.cpu=1000m
