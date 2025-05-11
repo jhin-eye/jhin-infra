@@ -50,7 +50,7 @@ jobs:
             --atomic \
             --set kraft.enabled=true \
             --set controller.replicaCount=1 \
-            --set controller.controller.enabled=false \
+            --set controller.controller.enabled=true \
             --set brokers.replicaCount=1 \
             --set auth.enabled=false \
             --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
