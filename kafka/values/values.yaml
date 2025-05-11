@@ -7,18 +7,30 @@ controller:
     enabled: true
     size: 2Gi
     storageClass: gp2
+  listeners:
+    controller:
+      protocol: PLAINTEXT
+      containerPort: 9093
+      advertisedHost: kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local
+      advertisedPort: 9093
 
 brokers:
   replicaCount: 1
   controller:
-    enabled: false      # 👈 브로커는 컨트롤러 역할 안함
+    enabled: false
   listeners:
     client:
+      name: PLAINTEXT
       protocol: PLAINTEXT
-    controller:
+      containerPort: 9092
+      advertisedHost: kafka.jhin-eye.svc.cluster.local
+      advertisedPort: 9092
+    interbroker:
+      name: INTERNAL
       protocol: PLAINTEXT
-  configurationOverrides:
-    advertised.listeners: PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092
+      containerPort: 9094
+      advertisedHost: kafka.jhin-eye.svc.cluster.local
+      advertisedPort: 9094
   persistence:
     enabled: true
     size: 1Gi
@@ -28,11 +40,16 @@ auth:
   enabled: false
   clientProtocol: plaintext
   interBrokerProtocol: plaintext
+  sasl:
+    mechanisms: []
+    interBrokerMechanism: ""
+  tls:
+    enabled: false
 
 resources:
   requests:
-    memory: 512Mi
-    cpu: 250m
-  limits:
     memory: 1Gi
     cpu: 500m
+  limits:
+    memory: 2Gi
+    cpu: 1000m

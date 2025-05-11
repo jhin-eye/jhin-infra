@@ -46,4 +46,17 @@ jobs:
         helm upgrade --install kafka bitnami/kafka \
           --namespace jhin-eye \
           --create-namespace \
-          -f kafka/values/values.yaml
+          --version 32.2.3 \
+          --set kraft.enabled=true \
+          --set controller.replicaCount=1 \
+          --set brokers.replicaCount=1 \
+          --set brokers.controller.enabled=false \
+          --set auth.enabled=false \
+          --set auth.clientProtocol=plaintext \
+          --set auth.interBrokerProtocol=plaintext \
+          --set listeners.client.protocol=PLAINTEXT \
+          --set listeners.interbroker.protocol=PLAINTEXT \
+          --set resources.requests.memory=1Gi \
+          --set resources.requests.cpu=500m \
+          --set resources.limits.memory=2Gi \
+          --set resources.limits.cpu=1000m
