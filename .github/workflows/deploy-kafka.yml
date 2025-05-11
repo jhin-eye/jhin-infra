@@ -60,5 +60,6 @@ jobs:
             --set brokers.persistence.enabled=true \
             --set brokers.persistence.size=1Gi \
             --set brokers.persistence.storageClass=gp2-csi \
+            --set listeners.client.protocol=PLAINTEXT \ 
             --set configurationOverrides.listeners="PLAINTEXT://:9092" \
             --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092"
