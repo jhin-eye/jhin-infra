@@ -17,6 +17,8 @@ brokers:
       protocol: PLAINTEXT
     controller:
       protocol: PLAINTEXT
+  configurationOverrides:
+    advertised.listeners: PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092
   persistence:
     enabled: true
     size: 1Gi
