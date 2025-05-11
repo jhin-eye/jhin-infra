@@ -49,8 +49,10 @@ jobs:
             --version 32.2.3 \
             --atomic \
             --set kraft.enabled=true \
+            --set kraft.clusterId=jhinClusterId001 \
             --set controller.replicaCount=1 \
-            --set controller.controller.enabled=true \
+            --set controller.broker.enabled=true \
+            --set configurationOverrides."controller\\.quorum\\.voters"="0@kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local:9093" \
             --set brokers.replicaCount=1 \
             --set auth.enabled=false \
             --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
@@ -62,5 +64,4 @@ jobs:
             --set brokers.persistence.storageClass=gp2-csi \
             --set listeners.client.protocol=PLAINTEXT \
             --set configurationOverrides.listeners="PLAINTEXT://:9092" \
-            --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092" \
-            --set configurationOverrides."controller.quorum.voters"="0@kafka-controller-0.kafka-controller-headless.jhin-eye.svc.cluster.local:9093"
+            --set configurationOverrides.advertised.listeners="PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092"
