@@ -22,3 +22,12 @@ persistence:
   enabled: true
   size: 1Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
   storageClass: gp2  # EBS 볼륨으로 생성
+extraEnvVars:
+  - name: KAFKA_CFG_LISTENERS
+    value: PLAINTEXT://:9092
+  - name: KAFKA_CFG_ADVERTISED_LISTENERS
+    value: PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092
+  - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+    value: PLAINTEXT:PLAINTEXT
+  - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+    value: PLAINTEXT
