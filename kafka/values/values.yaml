@@ -22,6 +22,10 @@ persistence:
   enabled: true
   size: 1Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
   storageClass: gp2  # EBS 볼륨으로 생성
+
+auth:
+  enabled: false
+
 extraEnvVars:
   - name: KAFKA_CFG_LISTENERS
     value: PLAINTEXT://:9092
