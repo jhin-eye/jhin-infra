@@ -6,7 +6,7 @@ controller:
   persistence:
     enabled: true
     size: 2Gi
-    storageClass: gp2
+    storageClass: gp2-csi
   listeners:
     controller:
       protocol: PLAINTEXT
@@ -34,7 +34,7 @@ brokers:
   persistence:
     enabled: true
     size: 1Gi
-    storageClass: gp2
+    storageClass: gp2-csi
 
 auth:
   enabled: false
