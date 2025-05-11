@@ -1,31 +1,24 @@
-replicaCount: 1
+# Kafka 전체 컨트롤러 수 (아래 controller.replicaCount가 우선함. 이건 구버전 잔재)
+replicaCount: 1  # Deprecated
 
-auth:
-  enabled: false  # ✅ 이건 필수지만 이것만으론 부족함
-
+controller:
+  # Kafka 컨트롤러 Pod 개수 (여기 값이 실제로 반영됨)
+  replicaCount: 1
+  persistence:
+    enabled: true
+    storageClass: gp2
+    size: 2Gi
+# Zookeeper 내장 기능 비활성화 (이미 외부 Zookeeper를 따로 띄워서)
 zookeeper:
-  enabled: true
-
-externalZookeeper:
   enabled: false
 
+# 외부 Zookeeper 주소 명시
+externalZookeeper:
+  servers:
+    - zookeeper.jhin-eye.svc.cluster.local
+
 persistence:
+  # Kafka의 데이터(로그 등)를 영속적으로 저장할지 여부
   enabled: true
-  storageClass: gp3
-  size: 1Gi
-
-# 핵심 설정: 명시적으로 PLAINTEXT만 사용
-config:
-  listeners: PLAINTEXT://:9092
-  advertised.listeners: PLAINTEXT://kafka.jhin-eye.svc.cluster.local:9092
-  listener.security.protocol.map: PLAINTEXT:PLAINTEXT
-  inter.broker.listener.name: PLAINTEXT
-  security.inter.broker.protocol: PLAINTEXT
-
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 250m
-  limits:
-    memory: 1Gi
-    cpu: 500m
+  size: 1Gi  # 비용 고려해 용량 줄인 상태 (기본은 8Gi)
+  storageClass: gp2  # EBS 볼륨으로 생성
