@@ -3,65 +3,65 @@ name: Deploy Kafka to EKS
 on:
   push:
     tags:
-      - 'kafka-v*'  # 예: kafka-v0.1.0 태그 푸시 시 실행
+      - 'kafka-v*'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
 
-    - name: Set up Helm
-      uses: azure/setup-helm@v3
-      with:
-        version: v3.13.3
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.13.3
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-    - name: Update kubeconfig for EKS
-      run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
+      - name: Update kubeconfig for EKS
+        run: aws eks update-kubeconfig --region ap-northeast-2 --name jhin-eye
 
-    - name: Add Bitnami Helm Repo
-      run: |
-        helm repo add bitnami https://charts.bitnami.com/bitnami
-        helm repo update
+      - name: Add Bitnami Helm Repo
+        run: |
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo update
 
-    - name: Clean existing Kafka release and PVC
-      run: |
-        helm uninstall kafka -n jhin-eye || true
-        kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true
+      - name: Clean existing Kafka release and PVC
+        run: |
+          helm uninstall kafka -n jhin-eye || true
+          kubectl delete pvc -n jhin-eye -l app.kubernetes.io/instance=kafka || true
 
-- name: Deploy Kafka with Helm
-  run: |
-    helm upgrade --install kafka bitnami/kafka \
-      --namespace jhin-eye \
-      --create-namespace \
-      --version 32.2.3 \
-      --set kraft.enabled=true \
-      --set controller.replicaCount=1 \
-      --set controller.persistence.enabled=true \
-      --set controller.persistence.size=2Gi \
-      --set controller.persistence.storageClass=gp2-csi \
-      --set brokers.replicaCount=1 \
-      --set brokers.controller.enabled=false \
-      --set brokers.persistence.enabled=true \
-      --set brokers.persistence.size=1Gi \
-      --set brokers.persistence.storageClass=gp2-csi \
-      --set auth.enabled=false \
-      --set auth.clientProtocol=plaintext \
-      --set auth.interBrokerProtocol=plaintext \
-      --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
-      --set resources.requests.memory=1Gi \
-      --set resources.requests.cpu=500m \
-      --set resources.limits.memory=2Gi \
-      --set resources.limits.cpu=1000m
+      - name: Deploy Kafka with Helm  # ✅ 들여쓰기 올바르게 수정됨
+        run: |
+          helm upgrade --install kafka bitnami/kafka \
+            --namespace jhin-eye \
+            --create-namespace \
+            --version 32.2.3 \
+            --set kraft.enabled=true \
+            --set controller.replicaCount=1 \
+            --set controller.persistence.enabled=true \
+            --set controller.persistence.size=2Gi \
+            --set controller.persistence.storageClass=gp2-csi \
+            --set brokers.replicaCount=1 \
+            --set brokers.controller.enabled=false \
+            --set brokers.persistence.enabled=true \
+            --set brokers.persistence.size=1Gi \
+            --set brokers.persistence.storageClass=gp2-csi \
+            --set auth.enabled=false \
+            --set auth.clientProtocol=plaintext \
+            --set auth.interBrokerProtocol=plaintext \
+            --set nodeSelector."eks\\.amazonaws\\.com/nodegroup"=jhin-eye-nodes \
+            --set resources.requests.memory=1Gi \
+            --set resources.requests.cpu=500m \
+            --set resources.limits.memory=2Gi \
+            --set resources.limits.cpu=1000m
